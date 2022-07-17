@@ -1,82 +1,474 @@
-var dog,sadDog,happyDog, database;
-var foodS,foodStock;
-var fedTime,lastFed;
-var feed,addFood;
-var foodObj;
+var dog, dogHappy;
+
+
+
+
+var foodStock,foodS;
+
+
+var changinggameState, readState,gameState;
+
+
+var bedroom, garden, washroom;
+
+
+var feed, addFood;
+
+
+var lastFed;
+
+
+var currentTime;
+
+
+var milk;
+
+
+
+
+
+
 
 function preload(){
-sadDog=loadImage("Dog.png");
-happyDog=loadImage("happy dog.png");
+
+
+ dogImg=loadImage("Dog.png");
+
+
+ dogHappy=loadImage("Happy.png");
+
+
+ bedroom=loadImage("Bed Room.png");
+
+
+ garden=loadImage("Garden.png");
+
+
+ washroom=loadImage("Wash Room.png")
+
+
+ livingroom = loadImage("Living Room.png")
+
+
+ sadDog=loadImage("Dog.png")
+
+
+ milk=loadImage("milk.png")
+
+
 }
+
+
+
+
+
+
 
 function setup() {
-  database=firebase.database();
-  createCanvas(1000,400);
 
-  foodObj = new Food();
 
-  foodStock=database.ref('Food');
-  foodStock.on("value",readStock);
-  
-  dog=createSprite(800,200,150,150);
-  dog.addImage(sadDog);
-  dog.scale=0.15;
-  
-  feed=createButton("Feed the dog");
-  feed.position(700,95);
-  feed.mousePressed(feedDog);
+	database= firebase.database();
 
-  addFood=createButton("Add Food");
-  addFood.position(800,95);
-  addFood.mousePressed(addFoods);
 
-}
+ createCanvas(800, 1000);
 
-function draw() {
-  background(46,139,87);
-  foodObj.display();
 
-  fedTime=database.ref('FeedTime');
-  fedTime.on("value",function(data){
-    lastFed=data.val();
-  });
+ dog = createSprite(500,350,10,10);
+
+
+ dog.addImage("dogImg",dogImg);
+
+
+ foodS = new Food()
+
+
+ foodS.getFoodstock();
+
+
+ dog.scale=0.15;
+
+
+ feed = createButton("Feed Dog");
+
+
+ feed.position(150,50);
+
+
+
+
+
+
+ Bath=createButton("I want to take bath");
+
+
+ Bath.position(300,50);
+
+
+ Play=createButton("Lets Play !");
+
+
+ Play.position(450,50);
+
+
+ Sleep=createButton("I am very sleepy");
+
+
+ Sleep.position(600,50);
+
+
+ PlayInGarden=createButton("Dig!");
+
+
+ PlayInGarden.position(750,50);
+
+
+ addFood = createButton("Add Food");
+
+
+ addFood.position(300,50);
+
+
+ addFood.mousePressed(add);
+
+
  
-  fill(255,255,254);
-  textSize(15);
-  if(lastFed>=12){
-    text("Last Feed : "+ lastFed%12 + " PM", 350,30);
-   }else if(lastFed==0){
-     text("Last Feed : 12 AM",350,30);
-   }else{
-     text("Last Feed : "+ lastFed + " AM", 350,30);
-   }
- 
-  drawSprites();
+
+
+ database.ref('gameState').on("value",function(data){
+
+
+   gameState=data.val();
+
+
+ });
+
+
+
+
+
+
+
+// database.ref('foodStock').on("value",readStock);
+
+
+textSize(20);
+
+
 }
 
-//function to read food Stock
-function readStock(data){
-  foodS=data.val();
-  foodObj.updateFoodStock(foodS);
+
+function draw() { 
+
+
+
+
+
+
+
+ fill("white")
+
+
+;
+
+
+if(gameState==="hungry"){
+
+
+background(0);
+
+
+dog.visible=true;
+
+
+//dog = createSprite(500,350,10,10);
+
+
+//dog.addImage("dogImg",dogImg);
+
+
+//dog.scale=0.3;
+
+
+foodS.display();
+
+
+}else{
+
+
+ dog.visible = false;
+
+
 }
 
 
-//function to update food stock and last fed time
+feed.mousePressed(feedDog)
+
+
+Bath.mousePressed(function(){
+
+
+ gameState="bathing";
+
+
+ database.ref('/').update({'gameState':gameState});
+
+
+});
+
+
+if(gameState==="bathing"){
+
+
+ foodS.washroom();
+
+
+ dog.visible = false;
+
+
+// milk.visible=false
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+Sleep.mousePressed(function(){
+
+
+ gameState="sleeping";
+
+
+ database.ref('/').update({'gameState':gameState});
+
+
+});
+
+
+if(gameState==="sleeping"){
+
+
+ foodS.bedroom();
+
+
+ dog.visible = false;
+
+
+ //milk.visible=false
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+Play.mousePressed(function(){
+
+
+ gameState="playing";
+
+
+ database.ref('/').update({'gameState':gameState});
+
+
+});
+
+
+if(gameState==="playing"){
+
+
+ foodS.livingroom();
+
+
+ dog.visible = false;
+
+
+ //milk.visible=false
+
+
+}
+
+
+
+
+
+
+
+PlayInGarden.mousePressed(function(){
+
+
+ gameState="playg";
+
+
+ database.ref('/').update({'gameState':gameState});
+
+
+});
+
+
+if(gameState==="playg"){
+
+
+ foodS.garden();
+
+
+ dog.visible = false;
+
+
+ //milk.visible=false
+
+
+}
+
+
+
+
+
+
+
+ database.ref("time").on("value",function (data){
+
+
+   foodS.lastFed = data.val(); })
+ text("Last Fed: "+foodS.lastFed,50,50)
+
+
+ // text("Food Remaining: "+foodStock,300,150)
+
+
+ // text("Note: Press UP ARROW To Feed The Dog",200,70);
+
+
+
+
+
+
+//   if(keyDown(UP_ARROW)){
+
+
+//      writeStock(foodStock-1);
+
+
+//      dog.addImage(dogHappy);
+
+
+//  } 
+
+
+
+
+
+
+
+drawSprites();
+
+
+}
+
+
+
+
+
+
 function feedDog(){
-  dog.addImage(happyDog);
-  
 
-  foodObj.updateFoodStock(foodObj.getFoodStock()-1)
-  database.ref('/').update({
-    Food:foodObj.getFoodStock(),
-    FeedTime:hour()
-  })
+
+  foodS.updateFoodstock(foodStock-1);
+
+
+  database.ref('/').update({time:hour()})
+
+
+  gameState="hungry";
+
+
+  update(gameState);
+
+
 }
 
-//function to add food in stock
-function addFoods(){
-  foodS++;
-  database.ref('/').update({
-    Food:foodS
-  })
+
+
+
+
+
+
+function add(){
+
+
+  foodS.updateFoodstock(foodStock+1);
+
+
+  gameState="hungry";
+
+
+  update(gameState);
+
+
 }
+
+
+
+
+
+
+function update(state){
+
+
+ database.ref('/').update({
+
+
+   gameState:state});
+
+
+}
+
+
+//function readStock(data){
+
+
+      //foodStock=data.val();
+
+
+//}
+
+
+//function writeStock(x){
+
+
+ // if(x<=0){
+
+
+   // x=0;
+
+
+//    }
+
+
+//    database.ref('/').update({
+
+
+//      foodStock:x
+
+
+//    })
+
+
+//  }
+
