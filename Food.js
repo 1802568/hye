@@ -1,34 +1,168 @@
-class Food{
-    constructor(){
-        this.image=loadImage("milk.png")
-        this.foodStock=0
-        this.lastFed
-        
-    }
-getFoodStock(){
-return this.foodStock
+class Food {
+
+
+
+
+constructor(){
+
+
+   this.milk = loadImage("images/milk.png");
+
+
+   this.food = 0;
+
+
+   this.lastFed = 0;
+
+
 }
-updateFoodStock(food){
-    this.foodStock=food
+
+
+getFoodstock(){
+
+
+    database.ref("foodStock").on("value",function(data){
+
+
+        foodStock = data.val();
+
+
+    });
+
+
 }
-deductFood(){
-    if(this.foodStock>0){
-this.foodStock=this.foodStock-1
-    }
+
+
+
+
+
+
+
+updateFoodstock(x){
+
+
+     if(x<=0){
+
+
+       x=0;
+
+
+   }
+
+
+   database.ref('/').update({foodStock:x})
+
+
+  
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
 display(){
-    var x=80,y=100
-    imageMode(CENTER)
-    image(this.image,720,220,20,20)
-    if(this.foodStock!=0){
-        for(var i=0;i<this.foodStock;i++){
-            if(i%10==0){
-                x=80
-                y=y+50
-            }
-            image(this.image,x,y,50,50);
-            x=x+30
-        }
-    }
+
+
+   var x=80,y=100;
+
+
+   imageMode(CENTER);
+
+
+   background("green")
+
+
+   image(this.milk,400,350,70,70);
+
+
+  
+
+
+   if(foodStock!=0){
+
+
+       for(var i=0;i<foodStock;i++){
+
+
+           if(i%10==0){
+
+
+               x=80;
+
+
+               y=y+50;
+
+
+           }
+
+
+           image(this.milk,x,y,70,70);
+
+
+           x=x+30
+
+
+       }    }
+
+
 }
+
+
+garden(){
+
+
+   background(garden,550,400)
+
+
 }
+
+
+
+
+
+
+
+bedroom(){
+
+
+   background(bedroom,550,400)
+
+
+}
+
+
+washroom(){
+
+
+   background(washroom,550,400)
+
+
+}
+
+
+livingroom(){
+
+
+   background(livingroom,550,400)
+
+
+}
+
+
+
+
+
+
+
+}
+
+
